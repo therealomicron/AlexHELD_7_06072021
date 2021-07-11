@@ -1,5 +1,10 @@
 const http = require('http');
 const app = require('./app');
+const cors = require('cors');
+
+var corsOptions = {
+	origin: "http://localhost:8081"
+};
 
 const normalizePort = val => {
 	const port = parseInt(val, 10);
@@ -12,7 +17,7 @@ const normalizePort = val => {
 	}
 	return false;
 };
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '8080');
 app.set('port', port);
 
 const errorHandler = error => {
