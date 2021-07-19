@@ -3,6 +3,7 @@ const cors = require('cors');
 const corsOptions = {
 	origin: "http://localhost:8081"
 };
+const morgan = require('morgan');
 const express = require('express');
 const app = express();
 const path = require('path'); //module for working with file and directory paths
@@ -15,9 +16,9 @@ const sequelize = new Sequelize('p_sept', process.env.DB_USER, process.env.DB_PA
 
 
 //const submissionsRouter = require('./routes/submissions');
-//const usersRouter = require('./routes/users');
+const usersRouter = require('./routes/users');
 //app.use('/', submissionRouter);
-//app.use('/users', usersRouter);
+app.use('/users', usersRouter);
 const db = require("./models/index");
 db.sequelize.sync();
 

@@ -4,9 +4,9 @@ const bcrypt = require('bcrypt');
 const user = require('../models/user');
 const User = db.users;
 const Op = db.Sequelize.Op;
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+//const User = require('../models/user');
+//const jwt = require('jsonwebtoken');
+//const bcrypt = require('bcrypt');
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10).then(
