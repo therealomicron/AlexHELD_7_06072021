@@ -1,3 +1,6 @@
+process.on('warning', (warning) => {
+    console.log(warning.stack);
+});
 const http = require('http');
 const app = require('./app');
 
