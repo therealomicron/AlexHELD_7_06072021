@@ -78,3 +78,51 @@ exports.login = (req, res, next) => {
       }
     );
 }
+
+//deletes an account
+exports.suppression = (req, res, next) => {
+ console.log("User suppression controller called");
+ console.log(req.body);
+ User.findOne({
+   where: {
+     pseudo: req.body.pseudo
+   }
+ }).then(
+   (user) => {
+     if (!user) {
+       return res.status(401).json({
+         error: new Error('Le pseudo est introuvable.')
+       });
+     }
+     bcrypt.compare(req.body.hashedPassword, user.hashedPassword).then(
+       (valid) => {
+         if(!valid) {
+           return res.status(401).json({
+             error: new Error('Faux mot de passe.')
+           });
+         }
+         User.destroy({
+           where: {
+             pseudo: req.body.pseudo
+           },
+           truncate: false
+         })
+         .then(
+           res.send({message: req.body.pseudo + " supprimé avec succès."})
+         )
+         .catch(err => {
+           res.status(500).send({
+             message: 
+              err.message ||  "Une erreur inconnue est survenue pendant la suppression de votre compte."
+           })
+         })
+       }
+     )
+   }
+ ).catch( (error) => {
+   console.log(error);
+   res.status(500).json({
+     error: error
+   });
+ }); 
+}
