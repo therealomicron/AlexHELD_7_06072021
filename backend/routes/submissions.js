@@ -1,9 +1,16 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('submissions', { title: 'Express' });
-});
+const auth = require('../middleware/auth');
+const multer = require('../middleware/multer-config');
+
+const submissionsCtrl = require('../controllers/submissions');
+
+router.get('/', auth, submissionsCtrl.getAllSubmissions);
+router.post('/', auth, multer, submissionsCtrl.createSubmission);
+router.get('/:id', auth, submissionsCtrl.getOneSubmission);
+router.put('/:id', auth, multer, submissionsCtrl.modifySubmission);
+router.delete('/:id', auth, submissionsCtrl.deleteSubmission);
+router.post('/:id/like', auth, submissionsCtrl.likeSubmission);
 
 module.exports = router;

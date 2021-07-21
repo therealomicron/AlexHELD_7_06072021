@@ -26,7 +26,9 @@ const usersRouter = require('./routes/users');
 //app.use('/', submissionRouter);
 app.use('/api/auth/users', usersRouter);
 const db = require("./models/index");
-db.sequelize.sync();
+db.sequelize.sync({
+	alter: true
+});
 
 
 
