@@ -7,13 +7,13 @@ const Op = db.Sequelize.Op;
 
 exports.signup = (req, res, next) => {
   console.log("Signup controller called");
-  console.log(req.query.hashedPassword);
-  bcrypt.hash(req.query.hashedPassword, 10).then(
+  console.log(req.body);
+  bcrypt.hash(req.body.hashedPassword, 10).then(
     (hash) => {
       const user = new User({
-        pseudo: req.query.pseudo,
+        pseudo: req.body.pseudo,
         hashedPassword: hash,
-        isAdmin: 0
+        isAdmin: 0 
       });
       user.save().then(
         () => {
@@ -33,14 +33,18 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    User.findOne({ pseudo: req.query.pseudo }).then(
+  console.log("login controller called");
+  console.log(req.body);
+    User.findOne({ where: {
+      pseudo: req.body.pseudo }
+    }).then(
       (user) => {
         if (!user) {
           return res.status(401).json({
             error: new Error('User not found!')
           });
         }
-        bcrypt.compare(req.query.hashedPassword, user.hashedPassword).then(
+        bcrypt.compare(req.body.hashedPassword, user.hashedPassword).then(
           (valid) => {
             if (!valid) {
               return res.status(401).json({
@@ -58,6 +62,7 @@ exports.login = (req, res, next) => {
           }
         ).catch(
           (error) => {
+            console.log(error);
             res.status(500).json({
               error: error
             });
@@ -66,6 +71,7 @@ exports.login = (req, res, next) => {
       }
     ).catch(
       (error) => {
+        console.log(error);
         res.status(500).json({
           error: error
         });

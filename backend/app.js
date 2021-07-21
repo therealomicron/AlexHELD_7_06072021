@@ -17,7 +17,7 @@ const sequelize = new Sequelize('p_sept', process.env.DB_USER, process.env.DB_PA
 
 app.use(morgan('combined'));
 app.use(bodyParser.json());
-//app.use(express.json());
+app.use(express.json());
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
