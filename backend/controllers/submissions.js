@@ -111,7 +111,7 @@ exports.deleteSubmission = (req, res, next) => {
  
   exports.getAllSubmissions = (req, res, next) => {
     Submission.findAll({
-      order: [sequelize.fn(sequelize.col('lastActivity'), 'DESC')],
+      //order: [sequelize.fn(sequelize.col('lastActivity'), 'DESC')],
       limit: 10
     }).then(
       (submissions) => {
