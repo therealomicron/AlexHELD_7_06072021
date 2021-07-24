@@ -20,7 +20,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.users = require("./user.js")(sequelize, Sequelize);
-//db.submissions = require("./submission.js");
+db.submissions = require("./submission.js")(sequelize, Sequelize);
 
 module.exports = db;
 
