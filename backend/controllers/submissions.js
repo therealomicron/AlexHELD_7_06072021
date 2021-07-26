@@ -57,7 +57,6 @@ exports.modifySubmission = (req, res, next) => {
   console.log(id);
   console.log(req.body);
   Submission.update({
-    title: req.body.submission.title,
     submissionText: req.body.submission.submissionText
   }, {
     where: { id: id }
