@@ -8,17 +8,15 @@ const Op = db.Sequelize.Op
 const fs = require('fs');
 
 exports.createSubmission = (req, res, next) => {
-  req.body.submission = JSON.parse(req.body.submission);
+  //req.body.submission = JSON.parse(req.body.submission);
+  console.log("createSubmission called");
+  console.log(req.body);
   const url = req.protocol + '://' + req.get('host');
   const submission = new Submission({
     title: req.body.submission.title,
     submissionText: req.body.submission.submissionText,
     imageUrl: url + '/images/' + req.file.filename,
-    author: req.body.submission.pseudo,
-    likes: 0,
-    dislikes: 0,
-    usersLiked: [],
-    usersDisliked: []
+    author: req.body.submission.pseudo
   });
   submission.save().then(
     () => {
