@@ -52,38 +52,29 @@ exports.getOneSubmission = (req, res, next) => {
 };
 
 exports.modifySubmission = (req, res, next) => {
-    let submission = new Submission({ _id: req.params._id });
-    if (req.file) {
-      const url = req.protocol + '://' + req.get('host');
-      req.body.submission = JSON.parse(req.body.submission);
-      submission = {
-        _id: req.params.id,
-        title: req.body.submission.title,
-        submissionText: req.body.submission.submissionText,
-        imageUrl: url + '/images/' + req.file.filename,
-        author: req.body.submission.pseudo,
-      };
-    } else {
-      submission = {
-        _id: req.params.id,
-        title: req.body.title,
-        submissionText: req.body.submissionText,
-        userId: req.body.userId,
-      };
-    }
-    Submission.updateOne({_id: req.params.id}, submission).then(
-      () => {
-        res.status(201).json({
-          message: 'Submission updated successfully!'
-        });
+  console.log("modifySubmission called");
+  const id = req.params.id;
+  console.log(id);
+  console.log(req.body);
+  Submission.update({
+    title: req.body.submission.title,
+    submissionText: req.body.submission.submissionText
+  }, {
+    where: { id: id }
+  })
+  .then( () => {
+      res.status(201).json({
+        message: 'Submission updated successfully!'
+      });
+    } 
+  )
+  .catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
       }
-    ).catch(
-      (error) => {
-        res.status(400).json({
-          error: error
-        });
-        }
-    );
+  );
 }                                                                                                                             
   
 exports.deleteSubmission = (req, res, next) => {
