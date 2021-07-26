@@ -15,7 +15,7 @@ exports.createSubmission = (req, res, next) => {
   const submission = new Submission({
     title: req.body.submission.title,
     submissionText: req.body.submission.submissionText,
-    imageUrl: url + '/images/' + req.file.filename,
+    image: url + '/images/' + req.file.filename,
     author: req.body.submission.pseudo
   });
   submission.save().then(
@@ -34,9 +34,11 @@ exports.createSubmission = (req, res, next) => {
 };
 
 exports.getOneSubmission = (req, res, next) => {
-    Submission.findOne({
-      _id: req.params.id
-    }).then(
+  console.log("calling getOneSubmission");
+  console.log(req.params);
+  const id = req.params.id;
+    Submission.findByPk(id)
+    .then(
       (submission) => {
         res.status(200).json(submission);
       }
@@ -108,6 +110,8 @@ exports.deleteSubmission = (req, res, next) => {
   };
  
   exports.getAllSubmissions = (req, res, next) => {
+    console.log("calling getAllSubmissions");
+    console.log(req.params.id);
     Submission.findAll({
       //order: [sequelize.fn(sequelize.col('lastActivity'), 'DESC')],
       limit: 10
