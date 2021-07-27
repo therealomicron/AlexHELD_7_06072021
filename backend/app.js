@@ -30,10 +30,4 @@ db.sequelize.sync({
 	alter: true
 });
 
-
-
-
-
-
-
 module.exports = app;
