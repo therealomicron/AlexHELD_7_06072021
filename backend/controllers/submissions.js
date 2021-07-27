@@ -3,14 +3,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const submission = require('../models/submission');
 const Submission = db.submissions;
+const User = db.users;
 const Op = db.Sequelize.Op
 
 const fs = require('fs');
+const user = require('../models/user');
 
 exports.createSubmission = (req, res, next) => {
-  //req.body.submission = JSON.parse(req.body.submission);
-  console.log("createSubmission called");
-  console.log(req.body);
   const url = req.protocol + '://' + req.get('host');
   const submission = new Submission({
     title: req.body.submission.title,
@@ -34,10 +33,8 @@ exports.createSubmission = (req, res, next) => {
 };
 
 exports.getOneSubmission = (req, res, next) => {
-  console.log("calling getOneSubmission");
-  console.log(req.params);
   const id = req.params.id;
-    Submission.findByPk(id)
+  Submission.findByPk(id)
     .then(
       (submission) => {
         res.status(200).json(submission);
@@ -77,15 +74,40 @@ exports.modifySubmission = (req, res, next) => {
 }                                                                                                                             
   
 exports.deleteSubmission = (req, res, next) => {
-    Submission.findOne({_id: req.params.id}).then(
-      (submission) => {
-        const filename = submission.imageUrl.split('/images/')[1];
+  let admin;
+  User.findOne({pseudo: req.body.pseudo}).then(
+    (record) => {
+      admin = record.isAdmin;
+      console.log(admin);
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      })
+      return;
+    }
+  ); 
+  Submission.findOne({_id: req.params.id}).then(
+    (submission) => {
+      console.log(submission.author);
+      console.log(req.body.pseudo);
+      console.log(req.body);
+      console.log(req.params.id);
+      if (admin == 1 || req.body.pseudo == submission.author) {
+        const filename = submission.image.split('/images/')[1];
         fs.unlink('images/' + filename, () => {
-          Submission.deleteOne({_id: req.params.id}).then(
-            () => {
+          Submission.destroy({where: {id: req.params.id} }).then(
+            (num) => {
+              if (num == 1) {
               res.status(200).json({
                 message: 'Deleted!'
               });
+              } else {
+                res.send({
+                  message: "The entry was not deleted. Perhaps entry " + req.params.id + " was not found."
+                })
+              }
             }
           ).catch(
             (error) => {
@@ -95,26 +117,36 @@ exports.deleteSubmission = (req, res, next) => {
             }
           );
         });
+      } else {
+        res.status(500).json({
+          message: "Vous n'avez pas les permissions nécessaires."
+        })
       }
-    );
-  };
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      })
+    }
+  );
+};
  
-  exports.getAllSubmissions = (req, res, next) => {
-    console.log("calling getAllSubmissions");
-    console.log(req.params.id);
-    Submission.findAll({
-      //order: [sequelize.fn(sequelize.col('lastActivity'), 'DESC')],
-      limit: 10
-    }).then(
-      (submissions) => {
-        res.status(200).json(submissions);
-      }
-    ).catch(
-      (error) => {
-        res.status(400).json({
-          error: error
-        });
-      }
-    );
-  };
-  
+exports.getAllSubmissions = (req, res, next) => {
+  console.log("calling getAllSubmissions");
+  console.log(req.params.id);
+  Submission.findAll({
+    //order: [sequelize.fn(sequelize.col('lastActivity'), 'DESC')],
+    limit: 10
+  }).then(
+    (submissions) => {
+      res.status(200).json(submissions);
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
+    }
+  );
+};
