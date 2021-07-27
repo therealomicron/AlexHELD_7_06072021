@@ -21,9 +21,9 @@ app.use(express.json());
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-//const submissionsRouter = require('./routes/submissions');
+const submissionsRouter = require('./routes/submissions');
 const usersRouter = require('./routes/users');
-//app.use('/', submissionRouter);
+app.use('/api/auth/submissions', submissionsRouter);
 app.use('/api/auth/users', usersRouter);
 const db = require("./models/index");
 db.sequelize.sync({

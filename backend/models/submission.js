@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             unique: false
         },
-		contents: {
+		submissionText: {
 			type: Sequelize.STRING,
 			allowNull: true,
 			unique: false
@@ -19,6 +19,14 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.STRING,
 			allowNull: true,
 			unique: false
+		},
+		likes: {
+			type: Sequelize.INTEGER,
+			defaultValue: 0
+		},
+		lastActivity: {
+			type: Sequelize.DATE,
+			defaultValue: Sequelize.NOW
 		}
 	});
 
