@@ -11,6 +11,5 @@ router.post('/', auth, multer, submissionsCtrl.createSubmission);
 router.get('/:id', auth, submissionsCtrl.getOneSubmission);
 router.put('/:id', auth, multer, submissionsCtrl.modifySubmission);
 router.delete('/:id', auth, submissionsCtrl.deleteSubmission);
-//router.post('/:id/like', auth, submissionsCtrl.likeSubmission);
 
 module.exports = router;
