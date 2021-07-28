@@ -34,7 +34,6 @@ exports.signup = (req, res, next) => {
 
 exports.login = (req, res, next) => {
   console.log("login controller called");
-  console.log(req.body);
     User.findOne({ where: {
       pseudo: req.body.pseudo }
     }).then(
@@ -52,11 +51,14 @@ exports.login = (req, res, next) => {
               });
             }
             const token = jwt.sign(
-              { userId: user._id },
+              { userId: user.pseudo,
+                isAdmin: user.isAdmin
+              },
               'RANDOM_TOKEN_SECRET',
               { expiresIn: '24h' });
+            console.log(token);  
             res.status(200).json({
-              userId: user._id,
+              userId: user.pseudo,
               token: token
             });
           }
@@ -81,8 +83,6 @@ exports.login = (req, res, next) => {
 
 //deletes an account
 exports.suppression = (req, res, next) => {
- console.log("User suppression controller called");
- console.log(req.body);
  User.findOne({
    where: {
      pseudo: req.body.pseudo

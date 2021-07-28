@@ -11,16 +11,32 @@ const Op = db.Sequelize.Op
 
 const fs = require('fs');
 
+let adminPowers = async function(req, res) {
+  let response = await User.findOne({where: {pseudo: req.body.pseudo}}
+  ).then(
+    queryResult => {
+      console.log("isAdmin: " + queryResult.isAdmin);
+      return queryResult.isAdmin;
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      })
+    }
+  );
+}
+
 exports.createComment = (req, res, next) => {
-  const url = req.protocol + '://' + req.get('host');
   const comment = new Comment({
+    submissionId: req.body.submissionId,
     commentText: req.body.comment.commentText,
     author: req.body.comment.pseudo
   });
   comment.save().then(
     () => {
       res.status(201).json({
-        message: 'Post saved successfully!'
+        message: 'Comment saved successfully!'
       });
     }
   ).catch(
@@ -32,21 +48,6 @@ exports.createComment = (req, res, next) => {
   );
 };
 
-exports.getOneComment = (req, res, next) => {
-  const id = req.params.id;
-  Comment.findByPk(id)
-    .then(
-      (comment) => {
-        res.status(200).json(comment);
-      }
-    ).catch(
-      (error) => {
-        res.status(404).json({
-          error: error
-        });
-      }
-    );
-};
 
 exports.modifyComment = (req, res, next) => {
   console.log("modifyComment called");
@@ -74,7 +75,7 @@ exports.modifyComment = (req, res, next) => {
 }                                                                                                                             
   
 exports.deleteComment = (req, res, next) => {
-  let admin;
+  console.log("deleteComment called")
   User.findOne({pseudo: req.body.pseudo}).then(
     (record) => {
       admin = record.isAdmin;

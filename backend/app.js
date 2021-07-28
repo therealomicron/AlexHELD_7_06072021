@@ -31,6 +31,7 @@ app.use('/api/auth/comments', commentsRouter);
 app.use('/api/auth/likes', likesRouter);
 const db = require("./models/index");
 db.sequelize.sync({
+	force: true,
 	alter: true
 });
 

@@ -8,8 +8,21 @@ const User = db.users;
 const Op = db.Sequelize.Op
 const like = require('../models/like');
 const Like = db.likes;
+const tokenizer = require('./common');
 
 const fs = require('fs');
+
+function tokenDecoder(req, res) {
+  const token = req.headers.authorization.split(' ')[1];
+  const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+  const userId = decodedToken.userId;
+  const isAdmin = decodedToken.isAdmin;
+  return {
+      "pseudo": userId,
+      "isAdmin": isAdmin
+  }
+};
+
 
 let likeExists = async function(req, res) {
   let response = await Like.findAndCountAll({where: {likeId: req.body.submissionId + req.body.pseudo}}
@@ -29,6 +42,7 @@ let likeExists = async function(req, res) {
 }
 
 exports.likeSwitch = (req, res, next) => {
+  console.log(tokenizer.decodedToken(req, res));
   console.log("likeSwitch called");
   likeExists(req, res).then(likeValue => {
     if (likeValue == 1) {
