@@ -11,28 +11,69 @@ const Like = db.likes;
 
 const fs = require('fs');
 
-exports.createLike = (req, res, next) => {
-  console.log("like creation function called");
-  const like = new Like({
-    likeId: req.body.submissionId + req.body.pseudo,
-    submissionId: req.body.submissionId,
-    pseudo: req.body.pseudo,
-    likeValue: 1 
-  });
-
-  like.save().then(
-    () => {
-      res.status(201).json({
-        message: 'Post saved successfully!'
-      });
+let likeExists = async function(req, res) {
+  let response = await Like.findAndCountAll({where: {likeId: req.body.submissionId + req.body.pseudo}}
+  ).then(
+    queryResult => {
+      console.log("queryResult.count: " + queryResult.count)
+      return queryResult.count
     }
   ).catch(
     (error) => {
       res.status(400).json({
         error: error
-      });
+      })
     }
   );
+  return response;
+}
+
+exports.likeSwitch = (req, res, next) => {
+  console.log("likeSwitch called");
+  likeExists(req, res).then(likeValue => {
+    if (likeValue == 1) {
+      Like.destroy({where: {likeId: req.body.submissionId + req.body.pseudo}}
+        ).then((num) => {
+          if (num == 1) {
+            res.status(200).json({
+              message: "unliked!"
+            })
+          } else {
+            res.status(500).json({
+              message: "like does not exist!"
+            })
+          }
+        }
+        ).catch(
+          (error) => {
+            res.status(400).json({
+              error: error
+            })
+          }
+        )
+    } else {
+      const like = new Like({
+        likeId: req.body.submissionId + req.body.pseudo,
+        submissionId: req.body.submissionId,
+        pseudo: req.body.pseudo,
+        likeValue: 1 
+      });
+
+      like.save().then(
+        () => {
+          res.status(201).json({
+            message: 'Like saved successfully!'
+          });
+        }
+      ).catch(
+        (error) => {
+          res.status(400).json({
+            error: error
+          });
+        }
+      );
+    }
+  })
 };
 
 
@@ -61,9 +102,8 @@ exports.modifyLike = (req, res, next) => {
  
 exports.getAllLikes = (req, res, next) => {
   console.log("calling getAllLikes");
-  console.log(req.params.id);
   Like.findAll({
-    where: {}
+    where: {submissionId: req.body.submissionId}
   }).then(
     (likes) => {
       res.status(200).json(likes);
