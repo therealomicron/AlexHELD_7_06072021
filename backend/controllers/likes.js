@@ -12,11 +12,12 @@ const Like = db.likes;
 const fs = require('fs');
 
 exports.createLike = (req, res, next) => {
+  console.log("like creation function called");
   const like = new Like({
     likeId: req.body.submissionId + req.body.pseudo,
     submissionId: req.body.submissionId,
     pseudo: req.body.pseudo,
-    likeValue: req.body.likeValue
+    likeValue: 1 
   });
 
   like.save().then(

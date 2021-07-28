@@ -24,11 +24,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 const submissionsRouter = require('./routes/submissions');
 const usersRouter = require('./routes/users');
 const commentsRouter = require('./routes/comments');
-const likesRouter = require('./routes/likes/');
+const likesRouter = require('./routes/likes');
 app.use('/api/auth/submissions', submissionsRouter);
 app.use('/api/auth/users', usersRouter);
 app.use('/api/auth/comments', commentsRouter);
-app.use('api/auth/likes', likesRouter);
+app.use('/api/auth/likes', likesRouter);
 const db = require("./models/index");
 db.sequelize.sync({
 	alter: true
