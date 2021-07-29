@@ -33,14 +33,17 @@ exports.createComment = (req, res, next) => {
 
 
 exports.modifyComment = (req, res, next) => {
+  console.log("modifyComment called.")
+  console.log(tokenizer.decodedToken(req, res));
   const commentId = req.body.commentId;
   const uId = tokenizer.decodedToken(req, res).pseudo;
   Comment.findOne({where: {id: commentId}}).then(queryResult => {
     if (uId == queryResult.author) {
+      console.log("comment modification authorized.");
       Comment.update({
-        commentText: req.body.comment.commentText
+        commentText: req.body.commentText
       }, {
-        where: { id: id }
+        where: { id: commentId }
       })
       .then( () => {
           res.status(201).json({
@@ -77,7 +80,7 @@ exports.deleteComment = (req, res, next) => {
   Comment.findOne({id: req.body.commentId}).then(
     (comment) => {
       if (admin == true || uId == comment.author) {
-          Comment.destroy({where: {id: req.params.id} }).then(
+          Comment.destroy({where: {id: req.body.commentId} }).then(
             (num) => {
               if (num == 1) {
               res.status(200).json({
