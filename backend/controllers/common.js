@@ -8,6 +8,7 @@ const User = db.users;
 const Op = db.Sequelize.Op
 const like = require('../models/like');
 const Like = db.likes;
+
 exports.decodedToken = (req, res) => {
   console.log("decodedToken has started.");
   const token = req.headers.authorization.split(' ')[1];
@@ -18,5 +19,4 @@ exports.decodedToken = (req, res) => {
       "pseudo": userId,
       "isAdmin": isAdmin
   }
-
 };

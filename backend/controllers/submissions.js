@@ -5,6 +5,7 @@ const submission = require('../models/submission');
 const Submission = db.submissions;
 const User = db.users;
 const Op = db.Sequelize.Op
+const tokenizer = require('./common');
 
 const fs = require('fs');
 const user = require('../models/user');

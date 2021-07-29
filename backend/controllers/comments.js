@@ -7,25 +7,8 @@ const User = db.users;
 const user = require('../models/user');
 const Comment = db.comments;
 const comment = require('../models/comment');
-const Op = db.Sequelize.Op
-
-const fs = require('fs');
-
-let adminPowers = async function(req, res) {
-  let response = await User.findOne({where: {pseudo: req.body.pseudo}}
-  ).then(
-    queryResult => {
-      console.log("isAdmin: " + queryResult.isAdmin);
-      return queryResult.isAdmin;
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      })
-    }
-  );
-}
+const Op = db.Sequelize.Op;
+const tokenizer = require('./common');
 
 exports.createComment = (req, res, next) => {
   const comment = new Comment({
