@@ -8,6 +8,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const path = require('path'); //module for working with file and directory paths
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000,
+	max: 100
+  });
+app.use(helmet()); //sets HTTP headers
+app.use(limiter);
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('p_sept', process.env.DB_USER, process.env.DB_PASS, {
