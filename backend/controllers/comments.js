@@ -74,7 +74,7 @@ exports.deleteComment = (req, res, next) => {
   console.log("deleteComment called")
   const uId = tokenizer.decodedToken(req, res).pseudo;
   const admin = tokenizer.decodedToken(req, res).isAdmin;
-  Comment.findOne({id: req.params.id}).then(
+  Comment.findOne({id: req.body.commentId}).then(
     (comment) => {
       if (admin == true || uId == comment.author) {
           Comment.destroy({where: {id: req.params.id} }).then(
