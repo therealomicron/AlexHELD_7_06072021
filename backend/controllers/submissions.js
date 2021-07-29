@@ -126,7 +126,7 @@ exports.deleteSubmission = (req, res, next) => {
           );
         });
       } else {
-        res.status(500).json({
+        res.status(401).json({
           message: "Vous n'avez pas les permissions nécessaires."
         })
       }
