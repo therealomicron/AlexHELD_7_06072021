@@ -13,7 +13,7 @@ const tokenizer = require('./common');
 const fs = require('fs');
 
 let likeExists = async function(req, res) {
-  let response = await Like.findAndCountAll({where: {likeId: req.body.submissionId + req.body.pseudo}}
+  let response = await Like.findAndCountAll({where: {likeId: req.body.submissionId + tokenizer.decodedToken(req, res).pseudo}}
   ).then(
     queryResult => {
       console.log("queryResult.count: " + queryResult.count)
@@ -31,10 +31,9 @@ let likeExists = async function(req, res) {
 
 exports.likeSwitch = (req, res, next) => {
   console.log(tokenizer.decodedToken(req, res));
-  console.log("likeSwitch called");
   likeExists(req, res).then(likeValue => {
     if (likeValue == 1) {
-      Like.destroy({where: {likeId: req.body.submissionId + req.body.pseudo}}
+      Like.destroy({where: {likeId: req.body.submissionId + tokenizer.decodedToken(req, res).pseudo}}
         ).then((num) => {
           if (num == 1) {
             res.status(200).json({
@@ -42,7 +41,7 @@ exports.likeSwitch = (req, res, next) => {
             })
           } else {
             res.status(500).json({
-              message: "like does not exist!"
+              message: "ce like n'existe pas !"
             })
           }
         }
@@ -54,17 +53,18 @@ exports.likeSwitch = (req, res, next) => {
           }
         )
     } else {
+      console.log(tokenizer.decodedToken(req, res).pseudo);
       const like = new Like({
-        likeId: req.body.submissionId + req.body.pseudo,
+        likeId: req.body.submissionId + tokenizer.decodedToken(req, res).pseudo,
         submissionId: req.body.submissionId,
-        pseudo: req.body.pseudo,
+        pseudo: tokenizer.decodedToken(req, res).pseudo,
         likeValue: 1 
       });
 
       like.save().then(
         () => {
           res.status(201).json({
-            message: 'Like saved successfully!'
+            message: 'Liked!'
           });
         }
       ).catch(

@@ -13,8 +13,8 @@ const tokenizer = require('./common');
 exports.createComment = (req, res, next) => {
   const comment = new Comment({
     submissionId: req.body.submissionId,
-    commentText: req.body.comment.commentText,
-    author: req.body.comment.pseudo
+    commentText: req.body.commentText,
+    author: tokenizer.decodedToken(req, res).pseudo 
   });
   comment.save().then(
     () => {
@@ -33,63 +33,59 @@ exports.createComment = (req, res, next) => {
 
 
 exports.modifyComment = (req, res, next) => {
-  console.log("modifyComment called");
-  const id = req.params.id;
-  console.log(id);
-  console.log(req.body);
-  Comment.update({
-    commentText: req.body.comment.commentText
-  }, {
-    where: { id: id }
-  })
-  .then( () => {
-      res.status(201).json({
-        message: 'Comment updated successfully!'
-      });
-    } 
-  )
-  .catch(
+  const commentId = req.body.commentId;
+  const uId = tokenizer.decodedToken(req, res).pseudo;
+  Comment.findOne({where: {id: commentId}}).then(queryResult => {
+    if (uId == queryResult.author) {
+      Comment.update({
+        commentText: req.body.comment.commentText
+      }, {
+        where: { id: id }
+      })
+      .then( () => {
+          res.status(201).json({
+            message: 'Comment updated successfully!'
+          });
+        } 
+      )
+      .catch(
+        (error) => {
+          res.status(400).json({
+            error: error
+          });
+          }
+      );
+    } else {
+      res.status(401).json({
+        message: "Vous n'avez pas les permissions nécessaires."
+      })
+      return;
+    }
+  }).catch(
     (error) => {
-      res.status(400).json({
+      res.status(500).json({
         error: error
       });
-      }
-  );
+    }
+   );
 }                                                                                                                             
   
 exports.deleteComment = (req, res, next) => {
   console.log("deleteComment called")
-  User.findOne({pseudo: req.body.pseudo}).then(
-    (record) => {
-      admin = record.isAdmin;
-      console.log(admin);
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      })
-      return;
-    }
-  ); 
-  Comment.findOne({_id: req.params.id}).then(
+  const uId = tokenizer.decodedToken(req, res).pseudo;
+  const admin = tokenizer.decodedToken(req, res).isAdmin;
+  Comment.findOne({id: req.params.id}).then(
     (comment) => {
-      console.log(comment.author);
-      console.log(req.body.pseudo);
-      console.log(req.body);
-      console.log(req.params.id);
-      if (admin == 1 || req.body.pseudo == comment.author) {
-        const filename = comment.image.split('/images/')[1];
-        fs.unlink('images/' + filename, () => {
+      if (admin == true || uId == comment.author) {
           Comment.destroy({where: {id: req.params.id} }).then(
             (num) => {
               if (num == 1) {
               res.status(200).json({
-                message: 'Deleted!'
+                message: 'Supprimé !'
               });
               } else {
                 res.send({
-                  message: "The entry was not deleted. Perhaps entry " + req.params.id + " was not found."
+                  message: "The entry was not deleted. Perhaps entry " + req.params.id + " does not exist."
                 })
               }
             }
@@ -100,8 +96,7 @@ exports.deleteComment = (req, res, next) => {
               });
             }
           );
-        });
-      } else {
+        } else {
         res.status(500).json({
           message: "Vous n'avez pas les permissions nécessaires."
         })
@@ -117,9 +112,8 @@ exports.deleteComment = (req, res, next) => {
 };
  
 exports.getAllComments = (req, res, next) => {
-  console.log("calling getAllComments");
-  console.log(req.params.id);
   Comment.findAll({
+    where: {submissionId: req.body.submissionId},
     //order: [sequelize.fn(sequelize.col('lastActivity'), 'DESC')],
     limit: 10
   }).then(

@@ -6,6 +6,10 @@ const Submission = db.submissions;
 const User = db.users;
 const Op = db.Sequelize.Op
 const tokenizer = require('./common');
+const Comment = db.comments;
+const comment = require('../models/comment');
+const like = require('../models/like');
+const Like = db.likes;
 
 const fs = require('fs');
 const user = require('../models/user');
@@ -76,27 +80,11 @@ exports.modifySubmission = (req, res, next) => {
 }                                                                                                                             
   
 exports.deleteSubmission = (req, res, next) => {
-  let admin;
-  User.findOne({pseudo: req.body.pseudo}).then(
-    (record) => {
-      admin = record.isAdmin;
-      console.log(admin);
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      })
-      return;
-    }
-  ); 
+  const admin = tokenizer.decodedToken(req, res).isAdmin;
+  const uId = tokenizer.decodedToken(req, res).pseudo;
   Submission.findOne({_id: req.params.id}).then(
     (submission) => {
-      console.log(submission.author);
-      console.log(req.body.pseudo);
-      console.log(req.body);
-      console.log(req.params.id);
-      if (admin == 1 || req.body.pseudo == submission.author) {
+      if (admin == true || uId == submission.author) {
         const filename = submission.image.split('/images/')[1];
         fs.unlink('images/' + filename, () => {
           Submission.destroy({where: {id: req.params.id} }).then(

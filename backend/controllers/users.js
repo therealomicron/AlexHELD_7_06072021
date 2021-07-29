@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const user = require('../models/user');
 const User = db.users;
 const Op = db.Sequelize.Op;
+const tokenizer = require('./common');
 
 exports.signup = (req, res, next) => {
   console.log("Signup controller called");
@@ -85,7 +86,7 @@ exports.login = (req, res, next) => {
 exports.suppression = (req, res, next) => {
  User.findOne({
    where: {
-     pseudo: req.body.pseudo
+     pseudo: tokenizer.decodedToken(req, res).pseudo
    }
  }).then(
    (user) => {
@@ -103,7 +104,7 @@ exports.suppression = (req, res, next) => {
          }
          User.destroy({
            where: {
-             pseudo: req.body.pseudo
+             pseudo: tokenizer.decodedToken(req, res).pseudo
            },
            truncate: false
          })
