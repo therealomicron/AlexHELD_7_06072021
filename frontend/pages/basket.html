@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Site e-commerce de vente en ligne spécialisé" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://kit.fontawesome.com/974a47a886.js" crossorigin="anonymous"></script>
+        <script src="../assets/js/basket.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <title>Orinoco</title>
+    </head>
+
+    <body class="bg-dark text-white d-flex flex-column">
+        <header class="vw-100 d-flex flex-row justify-content-between align-items-end">
+            <a href="../index.html"> <img src="../assets/img/logo_300.png" alt="Le logo d'Orinoco" /> </a>
+            <a class="m-3" href="../pages/basket.html"><i class="fas fa-shopping-basket"></i></a>
+        </header>
+
+        <main class="d-flex flex-column align-items-center">
+            <section>
+                <h1 class="text-center">Welcome to your basket</h1>
+            </section>
+            <section id="products" class="d-flex flex-column w-100">
+
+            </section>
+            <section id="prix" class="d-flex flex-row align-items-end">
+                <p id="prixTotal"></p>
+            </section>
+            <section class="d-flex flex-column w-100 align-items-center m-3">
+                <div class="m-3">
+                    <div class="d-flex flex-column flex-md-row">
+                    <Label>Nom
+                        <input type="text" id="nom" class="m-3" required/>
+                    </Label>
+                    <label>Prénom
+                        <input type="text" id="prenom" class="m-3" required/>
+                    </label>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row w-100 flex-wrap">
+                    <label>Adresse
+                        <input type="text" id="adresse" class="m-3" required/>
+                    </label>
+                    <label>Ville
+                        <input type="text" id="ville" class="m-3" required/>
+                    </label>
+                    <label>Code Postale
+                        <input type="text" id="zip" class="m-3" required/>
+                    </label>
+                    </div>
+                    <label>Adresse Mail
+                        <input type="email" id="email" class="m-3" required/>
+                    </label>
+                    <div class="d-flex flex-column align-items-center">
+                        <p>Je déclare avoir lu et pris connaissances des conditions de vente en ligne. </p>
+                        <input type='checkbox' class="m-3" id="tos" />
+                        <input type="submit" value="Commander maintenant" id="commander" disabled />
+                    </div>
+                </div> 
+            </section>
+        </main>
+
+        <footer class="d-flex flex-row justify-content-center">
+            <a class="mx-3" href="#">À propos</a>
+            <a class="mx-3" href="#">Contact</a>
+        </footer>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    </body>
+</html>
