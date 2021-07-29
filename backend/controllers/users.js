@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const user = require('../models/user');
 const User = db.users;
 const Op = db.Sequelize.Op;
+const tokenizer = require('./common');
 
 exports.signup = (req, res, next) => {
   console.log("Signup controller called");
@@ -34,7 +35,6 @@ exports.signup = (req, res, next) => {
 
 exports.login = (req, res, next) => {
   console.log("login controller called");
-  console.log(req.body);
     User.findOne({ where: {
       pseudo: req.body.pseudo }
     }).then(
@@ -52,11 +52,14 @@ exports.login = (req, res, next) => {
               });
             }
             const token = jwt.sign(
-              { userId: user._id },
+              { userId: user.pseudo,
+                isAdmin: user.isAdmin
+              },
               'RANDOM_TOKEN_SECRET',
               { expiresIn: '24h' });
+            console.log(token);  
             res.status(200).json({
-              userId: user._id,
+              userId: user.pseudo,
               token: token
             });
           }
@@ -81,11 +84,9 @@ exports.login = (req, res, next) => {
 
 //deletes an account
 exports.suppression = (req, res, next) => {
- console.log("User suppression controller called");
- console.log(req.body);
  User.findOne({
    where: {
-     pseudo: req.body.pseudo
+     pseudo: tokenizer.decodedToken(req, res).pseudo
    }
  }).then(
    (user) => {
@@ -103,7 +104,7 @@ exports.suppression = (req, res, next) => {
          }
          User.destroy({
            where: {
-             pseudo: req.body.pseudo
+             pseudo: tokenizer.decodedToken(req, res).pseudo
            },
            truncate: false
          })

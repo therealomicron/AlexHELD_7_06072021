@@ -5,17 +5,23 @@ const submission = require('../models/submission');
 const Submission = db.submissions;
 const User = db.users;
 const Op = db.Sequelize.Op
+const tokenizer = require('./common');
+const Comment = db.comments;
+const comment = require('../models/comment');
+const like = require('../models/like');
+const Like = db.likes;
 
 const fs = require('fs');
 const user = require('../models/user');
 
 exports.createSubmission = (req, res, next) => {
+  const uId = jwt.verify(req.headers.authorization.split(' ')[1], 'RANDOM_TOKEN_SECRET').userId;
   const url = req.protocol + '://' + req.get('host');
   const submission = new Submission({
     title: req.body.submission.title,
-    submissionText: req.body.submission.submissionText,
+    submissionText: req.body.submission.text,
     image: url + '/images/' + req.file.filename,
-    author: req.body.submission.pseudo
+    author: uId 
   });
   submission.save().then(
     () => {
@@ -54,7 +60,7 @@ exports.modifySubmission = (req, res, next) => {
   console.log(id);
   console.log(req.body);
   Submission.update({
-    submissionText: req.body.submission.submissionText
+    submissionText: req.body.submission.text
   }, {
     where: { id: id }
   })
@@ -74,27 +80,29 @@ exports.modifySubmission = (req, res, next) => {
 }                                                                                                                             
   
 exports.deleteSubmission = (req, res, next) => {
-  let admin;
-  User.findOne({pseudo: req.body.pseudo}).then(
-    (record) => {
-      admin = record.isAdmin;
-      console.log(admin);
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      })
-      return;
-    }
-  ); 
+  const admin = tokenizer.decodedToken(req, res).isAdmin;
+  const uId = tokenizer.decodedToken(req, res).pseudo;
   Submission.findOne({_id: req.params.id}).then(
     (submission) => {
-      console.log(submission.author);
-      console.log(req.body.pseudo);
-      console.log(req.body);
-      console.log(req.params.id);
-      if (admin == 1 || req.body.pseudo == submission.author) {
+      if (admin == true || uId == submission.author) {
+        Comment.destroy({where: {submissionId: req.params.id}}).then(
+          result => {
+            console.log("All comments of submission " + req.params.id + " have been deleted.")
+          }
+        ).catch(
+          error => {
+            console.log(error)
+          }
+        );
+        Like.destroy({where: {submissionId: req.params.id}}).then(
+          result => {
+            console.log("All likes of submission " + req.params.id + " have been deleted.")
+          }
+        ).catch(
+          error => {
+            console.log(error)
+          }
+        );
         const filename = submission.image.split('/images/')[1];
         fs.unlink('images/' + filename, () => {
           Submission.destroy({where: {id: req.params.id} }).then(
@@ -118,7 +126,7 @@ exports.deleteSubmission = (req, res, next) => {
           );
         });
       } else {
-        res.status(500).json({
+        res.status(401).json({
           message: "Vous n'avez pas les permissions nécessaires."
         })
       }

@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
 	const Comment = sequelize.define("comment", {
-		postId: {
+		submissionId: {
 			type: Sequelize.STRING,
 			allowNull: false,
 			unique: false 
