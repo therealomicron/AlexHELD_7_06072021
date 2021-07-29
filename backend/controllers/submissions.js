@@ -85,6 +85,24 @@ exports.deleteSubmission = (req, res, next) => {
   Submission.findOne({_id: req.params.id}).then(
     (submission) => {
       if (admin == true || uId == submission.author) {
+        Comment.destroy({where: {submissionId: req.params.id}}).then(
+          result => {
+            console.log("All comments of submission " + req.params.id + " have been deleted.")
+          }
+        ).catch(
+          error => {
+            console.log(error)
+          }
+        );
+        Like.destroy({where: {submissionId: req.params.id}}).then(
+          result => {
+            console.log("All likes of submission " + req.params.id + " have been deleted.")
+          }
+        ).catch(
+          error => {
+            console.log(error)
+          }
+        );
         const filename = submission.image.split('/images/')[1];
         fs.unlink('images/' + filename, () => {
           Submission.destroy({where: {id: req.params.id} }).then(
