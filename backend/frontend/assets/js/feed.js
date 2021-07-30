@@ -44,16 +44,16 @@ function makeDiv(obj) {
     newDiv.classList.add("col-8");
     const newTitle = document.createElement("h2");
     newTitle.textContent = obj.title;
-    const newPrice = document.createElement("p");
-    newPrice.textContent = "Prix: " + (obj.price/100) + "€";
+    const newAuthor = document.createElement("p");
+    newAuthor.textContent = "Auteur : " + obj.author;
     const newDescription = document.createElement("p");
     newDescription.textContent = obj.submissionText;
     newDescription.classList.add("text-truncate");
     const newLink = document.createElement("a");
     newLink.setAttribute("href", "./submission.html?pid=" + obj.id);
-    newLink.textContent = "Afficher le produit";
+    newLink.textContent = "Lire la discussion";
     newDiv.appendChild(newTitle);
-    newDiv.appendChild(newPrice);
+    newDiv.appendChild(newAuthor);
     newDiv.appendChild(newDescription);
     newDiv.appendChild(newLink);
     return newDiv;
@@ -75,9 +75,9 @@ function addToNews(obj) {
 }
 
 kickoffNews(newsApi).then(value => {
-    productList = value;
-    for (let i = 0; i < productList.length; i++) {
-        addToNews(productList[i]);
+    newsList = value;
+    for (let i = 0; i < newsList.length; i++) {
+        addToNews(newsList[i]);
     }
 }).catch(
     error => {
