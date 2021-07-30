@@ -28,7 +28,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'frontend')));
 const submissionsRouter = require('./routes/submissions');
 const usersRouter = require('./routes/users');
 const commentsRouter = require('./routes/comments');
@@ -37,6 +37,7 @@ app.use('/api/auth/submissions', submissionsRouter);
 app.use('/api/auth/users', usersRouter);
 app.use('/api/auth/comments', commentsRouter);
 app.use('/api/auth/likes', likesRouter);
+app.use('/home', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/index.html'))})
 const db = require("./models/index");
 db.sequelize.sync({
 	alter: true
