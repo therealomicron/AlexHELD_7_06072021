@@ -6,22 +6,24 @@
         <meta name="description" content="Site e-commerce de vente en ligne spécialisé" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script src="https://kit.fontawesome.com/974a47a886.js" crossorigin="anonymous"></script>
-        <script src="../assets/js/product.js"></script>
+        <script src="./assets/js/submission.js"></script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-        <title>Orinoco</title>
+        <title>Discussion</title>
     </head>
 
-    <body class="bg-dark text-white">
+    <body class="d-flex flex-column bg-dark text-white">
         <header class="d-flex flex-row justify-content-between align-items-end">
-            <a href="../index.html"> <img src="../assets/img/logo_300.png" alt="Le logo d'Orinoco" /> </a>
-            <a class="m-3" href="../pages/basket.html"><i class="fas fa-shopping-basket"></i></a>
+            <a href="./feed"> <img src="../assets/img/icon-left-font-monochrome-white.svg" alt="Le logo de groupomania" /> </a>
         </header>
-        <main class="d-flex flex-column vw-100 my-3">
-            <section class="d-flex flex-column mw-100 h-auto">
+        <main class="fluid-container vw-100 my-3">
+            <section class="row">
+                <div class="col-md-4 col-1"></div>
+                <div class="col" id="news"></div>
+                <div class="col-md-4 col-1"></div>
             </section>
         </main>
         <footer class="d-flex flex-row justify-content-center">
-            <a class="mx-3" href="#">À propos</a>
+            <a class="mx-3" href="#">Mes données</a>
             <a class="mx-3" href="#">Contact</a>
         </footer>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

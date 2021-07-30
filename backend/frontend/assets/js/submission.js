@@ -1,12 +1,12 @@
-const newsApi = "http://localhost:8080/api/auth/submissions";
+const newsApi = "http://localhost:8080/api/auth/submissions/";
+let searchParams = new URLSearchParams(location.search);
+let sId = searchParams.get("sid");
 function getNews(url) {
     const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
-    console.log("getting news with token " + bearerToken);
     return new Promise(function (resolve, reject) {
         let newsAsk = new XMLHttpRequest();
         newsAsk.open("GET", url, true);
         newsAsk.onreadystatechange = function () {
-            console.log(newsAsk.readyState);
             if (newsAsk.readyState === 4) {
                 if (newsAsk.status === 200) {
                     resolve(newsAsk.response);
@@ -49,13 +49,9 @@ function makeDiv(obj) {
     const newDescription = document.createElement("p");
     newDescription.textContent = obj.submissionText;
     newDescription.classList.add("text-truncate");
-    const newLink = document.createElement("a");
-    newLink.setAttribute("href", "./submission.html?sid=" + obj.id);
-    newLink.textContent = "Lire la discussion";
     newDiv.appendChild(newTitle);
     newDiv.appendChild(newAuthor);
     newDiv.appendChild(newDescription);
-    newDiv.appendChild(newLink);
     return newDiv;
 };
 
@@ -74,13 +70,53 @@ function addToNews(obj) {
     newsFeed.appendChild(makeArticle(obj));
 }
 
-kickoffNews(newsApi).then(value => {
+kickoffNews(newsApi + sId).then(value => {
+    console.log(value);
     newsList = value;
-    for (let i = 0; i < newsList.length; i++) {
-        addToNews(newsList[i]);
-    }
+    addToNews(newsList);
 }).catch(
     error => {
         console.log(error);
     }
 );
+
+const commentUrl = "http://localhost:8080/api/auth/comments";
+
+const commentCaller = function (url) {
+    const commentText = document.querySelector("#commentText");
+    const commentJson = {
+        commentText: commentText.value,
+        submissionId: sId
+    };
+    const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
+    return new Promise(function (resolve, reject) {
+        let req = new XMLHttpRequest()
+        req.open('POST', url, true)
+        req.onreadystatechange = function () {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    resolve(JSON.parse(req.response))
+                } else {
+                    reject(req)
+                }
+            }
+        };
+        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        req.setRequestHeader('Authorization', 'Bearer ' + bearerToken);
+        req.send(JSON.stringify(commentJson));
+    })
+}
+
+/*window.onload = () => {
+    console.log("onLoad function called");
+    const submitButton = document.querySelector("#submitComment");
+    submitButton.addEventListener("click", () => submitCaller(commentUrl).then(
+            window.location = './feed'
+        ).catch(
+            error => {
+                console.log(error);
+            }
+        )
+    );
+}
+*/

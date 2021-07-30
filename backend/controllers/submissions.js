@@ -144,7 +144,6 @@ exports.deleteSubmission = (req, res, next) => {
  
 exports.getAllSubmissions = (req, res, next) => {
   console.log("calling getAllSubmissions");
-  console.log(req.params.id);
   Submission.findAll({
     order:[ ['lastActivity', 'DESC'] ],
     limit: 10
