@@ -15,11 +15,13 @@ const fs = require('fs');
 const user = require('../models/user');
 
 exports.createSubmission = (req, res, next) => {
+  const parsedSubmission = JSON.parse(req.body.submission);
+  console.log(parsedSubmission);
   const uId = jwt.verify(req.headers.authorization.split(' ')[1], 'RANDOM_TOKEN_SECRET').userId;
   const url = req.protocol + '://' + req.get('host');
   const submission = new Submission({
-    title: req.body.submission.title,
-    submissionText: req.body.submission.text,
+    title: parsedSubmission.title,
+    submissionText: parsedSubmission.submissionText,
     image: './assets/images/' + req.file.filename,
     author: uId 
   });
