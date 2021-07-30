@@ -58,6 +58,7 @@ window.onload = () => {
         value => {
             console.log(value);
             window.sessionStorage.setItem("groupomaniaToken", value.token);
+            window.location = "./feed";
         }).catch(
             error => {
                 console.log(error);
