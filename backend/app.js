@@ -39,6 +39,7 @@ app.use('/api/auth/comments', commentsRouter);
 app.use('/api/auth/likes', likesRouter);
 app.use('/home', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/index.html'))})
 app.use('/feed', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/feed.html'))})
+app.use('/newSubmission', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/newSubmission.html'))})
 const db = require("./models/index");
 db.sequelize.sync({
 	alter: true
