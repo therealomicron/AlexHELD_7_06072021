@@ -1,21 +1,21 @@
-const productAPI = "http://localhost:3000/api/cameras";
-let productList;
-function getProductList(url) {
+const newsApi = "localhost:8080/api/auth/submissions"
+function getNews(url) {
     return new Promise(function (resolve, reject) {
-        let productListAsk = new XMLHttpRequest();
-        productListAsk.open("GET", url, true);
-        productListAsk.onreadystatechange = function () {
-            if (productListAsk.readyState === 4) {
-                if (productListAsk.status === 200) {
-                    resolve(productListAsk.response);
+        let newsAsk = new XMLHttpRequest();
+        newsAsk.open("GET", url, true);
+        newsAsk.onreadystatechange = function () {
+            if (newsAsk.readyState === 4) {
+                if (newsAsk.status === 200) {
+                    console.log(JSON.parse(newsAsk.response));
+                    resolve(newsAsk.response);
                 } else {
-                    reject(productListAsk.response);
+                    reject(newsAsk.response);
                 }
             } else {
-                console.log("Ready state: " + productListAsk.readyState);
+                console.log("Ready state: " + newsAsk.readyState);
             }
         }
-        productListAsk.send();
+        newsAsk.send();
     });
 };
 

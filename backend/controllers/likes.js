@@ -52,6 +52,15 @@ exports.likeSwitch = (req, res, next) => {
             })
           }
         )
+      Submission.increment('likes', {by: -1, where: {id: req.body.submissionId}}).then(
+        retour => {
+          console.log(retour)
+        }
+      ).catch(
+        error => {
+          console.log(error)
+        }
+      )
     } else {
       console.log(tokenizer.decodedToken(req, res).pseudo);
       const like = new Like({
@@ -74,6 +83,15 @@ exports.likeSwitch = (req, res, next) => {
           });
         }
       );
+      Submission.increment('likes', {by: 1, where: {id: req.body.submissionId}}).then(
+        retour => {
+          console.log(retour)
+        }
+      ).catch(
+        error => {
+          console.log(error)
+        }
+      )
     }
   })
 };
