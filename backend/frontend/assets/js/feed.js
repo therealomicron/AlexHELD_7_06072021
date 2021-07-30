@@ -1,12 +1,14 @@
-const newsApi = "localhost:8080/api/auth/submissions"
+const newsApi = "http://localhost:8080/api/auth/submissions";
 function getNews(url) {
+    const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
+    console.log("getting news with token " + bearerToken);
     return new Promise(function (resolve, reject) {
         let newsAsk = new XMLHttpRequest();
         newsAsk.open("GET", url, true);
         newsAsk.onreadystatechange = function () {
+            console.log(newsAsk.readyState);
             if (newsAsk.readyState === 4) {
                 if (newsAsk.status === 200) {
-                    console.log(JSON.parse(newsAsk.response));
                     resolve(newsAsk.response);
                 } else {
                     reject(newsAsk.response);
@@ -15,13 +17,15 @@ function getNews(url) {
                 console.log("Ready state: " + newsAsk.readyState);
             }
         }
+        console.log(bearerToken);
+        newsAsk.setRequestHeader('Authorization', 'Bearer ' + bearerToken);
         newsAsk.send();
     });
 };
 
-async function productArray(url) {
-    let productString = await getProductList(url);
-    return JSON.parse(productString);
+async function kickoffNews(url) {
+    let newsString = await getNews(url);
+    return JSON.parse(newsString);
 }
 
 function makeFigure(obj) {
@@ -29,8 +33,8 @@ function makeFigure(obj) {
     newFigure.classList.add("col-4");
     const newImg = document.createElement("img");
     newImg.classList.add("img-thumbnail");
-    newImg.setAttribute("src", obj.imageUrl);
-    newImg.setAttribute("alt", "A camera for hipsters");
+    newImg.setAttribute("src", obj.image);
+    newImg.setAttribute("alt", "user-submitted image");
     newFigure.appendChild(newImg);
     return newFigure;
 }
@@ -39,14 +43,14 @@ function makeDiv(obj) {
     const newDiv = document.createElement("div");
     newDiv.classList.add("col-8");
     const newTitle = document.createElement("h2");
-    newTitle.textContent = obj.name;
+    newTitle.textContent = obj.title;
     const newPrice = document.createElement("p");
     newPrice.textContent = "Prix: " + (obj.price/100) + "€";
     const newDescription = document.createElement("p");
-    newDescription.textContent = obj.description;
+    newDescription.textContent = obj.submissionText;
     newDescription.classList.add("text-truncate");
     const newLink = document.createElement("a");
-    newLink.setAttribute("href", "./pages/product.html?pid=" + obj._id);
+    newLink.setAttribute("href", "./submission.html?pid=" + obj.id);
     newLink.textContent = "Afficher le produit";
     newDiv.appendChild(newTitle);
     newDiv.appendChild(newPrice);
@@ -65,14 +69,18 @@ function makeArticle(obj) {
     return newArticle;
 }
 
-function addToProducts(obj) {
-    const products = document.querySelector("#products");
-    products.appendChild(makeArticle(obj));
+function addToNews(obj) {
+    const newsFeed = document.querySelector("#news");
+    newsFeed.appendChild(makeArticle(obj));
 }
 
-productArray(productAPI).then(value => {
+kickoffNews(newsApi).then(value => {
     productList = value;
     for (let i = 0; i < productList.length; i++) {
-        addToProducts(productList[i]);
+        addToNews(productList[i]);
     }
-});
+}).catch(
+    error => {
+        console.log(error);
+    }
+);
