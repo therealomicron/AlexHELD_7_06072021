@@ -18,6 +18,9 @@ exports.createComment = (req, res, next) => {
   });
   comment.save().then(
     () => {
+      Submission.update(
+        {lastActivity: db.Sequelize.fn('NOW')},
+        {where: {id: req.body.submissionId}})
       res.status(201).json({
         message: 'Comment saved successfully!'
       });

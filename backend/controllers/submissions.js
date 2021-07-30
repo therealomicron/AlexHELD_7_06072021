@@ -20,7 +20,7 @@ exports.createSubmission = (req, res, next) => {
   const submission = new Submission({
     title: req.body.submission.title,
     submissionText: req.body.submission.text,
-    image: url + '/images/' + req.file.filename,
+    image: './assets/images/' + req.file.filename,
     author: uId 
   });
   submission.save().then(
@@ -103,8 +103,8 @@ exports.deleteSubmission = (req, res, next) => {
             console.log(error)
           }
         );
-        const filename = submission.image.split('/images/')[1];
-        fs.unlink('images/' + filename, () => {
+        const filename = submission.image.split('/frontend/assets/images/')[1];
+        fs.unlink('frontend/assets/images/' + filename, () => {
           Submission.destroy({where: {id: req.params.id} }).then(
             (num) => {
               if (num == 1) {
@@ -144,7 +144,7 @@ exports.getAllSubmissions = (req, res, next) => {
   console.log("calling getAllSubmissions");
   console.log(req.params.id);
   Submission.findAll({
-    //order: [sequelize.fn(sequelize.col('lastActivity'), 'DESC')],
+    order:[ ['lastActivity', 'DESC'] ],
     limit: 10
   }).then(
     (submissions) => {
