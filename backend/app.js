@@ -8,6 +8,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const path = require('path'); //module for working with file and directory paths
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000,
+	max: 100
+  });
+app.use(helmet()); //sets HTTP headers
+app.use(limiter);
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('p_sept', process.env.DB_USER, process.env.DB_PASS, {
@@ -20,7 +28,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'frontend')));
 const submissionsRouter = require('./routes/submissions');
 const usersRouter = require('./routes/users');
 const commentsRouter = require('./routes/comments');
@@ -29,6 +37,8 @@ app.use('/api/auth/submissions', submissionsRouter);
 app.use('/api/auth/users', usersRouter);
 app.use('/api/auth/comments', commentsRouter);
 app.use('/api/auth/likes', likesRouter);
+app.use('/home', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/index.html'))})
+app.use('/feed', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/feed.html'))})
 const db = require("./models/index");
 db.sequelize.sync({
 	alter: true
