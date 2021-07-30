@@ -66,10 +66,17 @@ window.onload = () => {
         )
     );
     signupButton.addEventListener("click", () => connecter(signupUrl).then(
-        value => {
-            console.log(value);
-            window.sessionStorage.setItem("groupomaniaToken", value.token);
-        }).catch(
+            connecter(loginUrl).then(
+                value => {
+                console.log(value);
+                window.sessionStorage.setItem("groupomaniaToken", value.token);
+                window.location = "./feed";
+            }).catch(
+                error => {
+                    console.log(error);
+                }
+            )
+        ).catch(
             error => {
                 console.log(error);
             }
