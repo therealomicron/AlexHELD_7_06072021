@@ -89,10 +89,11 @@ kickoffNews(newsApi + sId).then(value => {
     }
 );
 
-const commentUrl = "http://localhost:8080/api/auth/comments";
+const commentUrl = "http://localhost:8080/api/auth/comments/";
 
 async function postComment(url){
-    const commentText = document.querySelector("#commentText").value;
+    const commentText = document.querySelector("#cT");
+    console.log("commentText: " + commentText.value)
     const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
     const response = await fetch(url, {
         method: "POST",
@@ -106,15 +107,15 @@ async function postComment(url){
         redirect: 'follow',
         referrerPolicy: 'no-referrer',
         body: JSON.stringify({
-            commentText: commentText,
+            commentText: commentText.value,
             submissionId: sId
         })
     });
-    console.log(response.json());
-    return response.json();
+    return response;
 }
 
 async function getComments(url) {
+    console.log("getting comments");
     const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
     const response = await fetch(url, {
         method: "GET",
@@ -128,32 +129,38 @@ async function getComments(url) {
         referrerPolicy: 'no-referrer',
         body: null
     });
-    console.log(response.json());
-    return response.json();
+    console.log(response);
+    return response.json;
 }
 
 
 window.onload = () => {
     console.log("onLoad function called");
-    const commentButton = document.querySelector("#commentButton");
+    const commentButton = document.querySelector("#cB");
     commentButton.addEventListener("click", () => postComment(commentUrl).then(
-            window.location.reload()
+            data => {
+                console.log(data);
+                window.location.reload();
+            }
         ).catch(
             error => {
-                commentButton.classList.add("bg-warning")
+                commentButton.classList.add("bg-danger")
                 alert(error);
                 console.log(error);
             }
         )
     );
-    getComments(commentUrl).then(response => {
-        response.forEach(element => {
+    console.log("getting comments");
+    console.log(commentUrl + sId);
+    getComments(commentUrl + sId).then(response => {
+        for (let i = 0; i < newsList.length; i++) {
+            console.log("iteration " + i);
             const commentsColumn = document.querySelector("#comments");
-            commentsColumn.appendChild(afficherCommentaires(data));
-        });
+            commentsColumn.appendChild(afficherCommentaires(response));
+        }
     }).catch(
         error => {
-            const commentsColumn = document.querySelector("comments");
+            const commentsColumn = document.querySelector("#comments");
             commentsColumn.classList.add("bg-warning");
             console.log(error);
 
