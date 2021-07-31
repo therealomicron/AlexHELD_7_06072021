@@ -73,10 +73,12 @@ function addToNews(obj) {
 function afficherCommentaires(data) {
     const newArticle = document.createElement("article");
     const newCommentaire = document.createElement("p");
-    newArticle.classList.add("w-100");
-    newCommentaire.textContent = data.commentText;
     newArticle.appendChild(newCommentaire);
-    
+    newCommentaire.textContent = data.commentText;
+    newArticle.classList.add("w-100");
+    newArticle.classList.add("border");
+    newArticle.classList.add("my-3");
+    return newArticle;
 }
 
 kickoffNews(newsApi + sId).then(value => {
@@ -93,7 +95,6 @@ const commentUrl = "http://localhost:8080/api/auth/comments/";
 
 async function postComment(url){
     const commentText = document.querySelector("#cT");
-    console.log("commentText: " + commentText.value)
     const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
     const response = await fetch(url, {
         method: "POST",
@@ -115,9 +116,8 @@ async function postComment(url){
 }
 
 async function getComments(url) {
-    console.log("getting comments");
     const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
-    const response = await fetch(url, {
+    const commentaires = await fetch(url, {
         method: "GET",
         mode: "cors",
         cache: "no-cache",
@@ -129,13 +129,12 @@ async function getComments(url) {
         referrerPolicy: 'no-referrer',
         body: null
     });
-    console.log(response);
-    return response.json;
+    const respo = await commentaires.json();
+    return respo;
 }
 
 
 window.onload = () => {
-    console.log("onLoad function called");
     const commentButton = document.querySelector("#cB");
     commentButton.addEventListener("click", () => postComment(commentUrl).then(
             data => {
@@ -150,13 +149,12 @@ window.onload = () => {
             }
         )
     );
-    console.log("getting comments");
-    console.log(commentUrl + sId);
     getComments(commentUrl + sId).then(response => {
-        for (let i = 0; i < newsList.length; i++) {
-            console.log("iteration " + i);
+        console.log("array length: " + response.length);
+        for (let i = 0; i < response.length; i++) {
             const commentsColumn = document.querySelector("#comments");
-            commentsColumn.appendChild(afficherCommentaires(response));
+            const comment = afficherCommentaires(response[i]);
+            commentsColumn.appendChild(comment);
         }
     }).catch(
         error => {
