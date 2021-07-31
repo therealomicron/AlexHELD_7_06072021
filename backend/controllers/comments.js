@@ -118,10 +118,11 @@ exports.deleteComment = (req, res, next) => {
 };
  
 exports.getAllComments = (req, res, next) => {
+  console.log("gathering comments for request");
+  console.log(req.params);
   Comment.findAll({
-    where: {submissionId: req.body.submissionId},
+    where: {submissionId: req.params.id},
     //order: [sequelize.fn(sequelize.col('lastActivity'), 'DESC')],
-    limit: 10
   }).then(
     (comments) => {
       res.status(200).json(comments);
