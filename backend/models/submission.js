@@ -13,7 +13,8 @@ module.exports = (sequelize, Sequelize) => {
 		submissionText: {
 			type: Sequelize.STRING,
 			allowNull: true,
-			unique: false
+			unique: false,
+			defaultValue: "*Vous entendez un bruit de grillons*"
 		},
 		image: {
 			type: Sequelize.STRING,

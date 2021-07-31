@@ -13,13 +13,23 @@
 
     <body class="d-flex flex-column bg-dark text-white">
         <header class="d-flex flex-row justify-content-between align-items-end">
-            <a href="./feed"> <img src="../assets/img/icon-left-font-monochrome-white.svg" alt="Le logo de groupomania" /> </a>
+            <a href="./feed"> <img src="./assets/img/icon-left-font-monochrome-white.svg" alt="Le logo de groupomania" class="img-fluid m-md-1"/> </a>
         </header>
         <main class="fluid-container vw-100 my-3">
-            <section class="row">
+            <section class="row news">
                 <div class="col-md-4 col-1"></div>
                 <div class="col" id="news"></div>
                 <div class="col-md-4 col-1"></div>
+            </section>
+            <section class="row comments">
+                <div class="col-md-4 col-1"></div>
+                <div class="col fluid-container" id="comments">
+                    <p class="text-center">Ajoutez votre mot !</p>
+                    <textarea id="newComent" rows="5" class="w-100 border rounded"></textarea>
+                    <button id="commentButton" class="col w-100 border rounded" value="Envoyez !">Envoyez !</button>
+                </div>
+                <div class="col-md-4 col-1"></div>
+
             </section>
         </main>
         <footer class="d-flex flex-row justify-content-center">

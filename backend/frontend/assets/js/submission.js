@@ -70,6 +70,15 @@ function addToNews(obj) {
     newsFeed.appendChild(makeArticle(obj));
 }
 
+function afficherCommentaires(data) {
+    const newArticle = document.createElement("article");
+    const newCommentaire = document.createElement("p");
+    newArticle.classList.add("w-100");
+    newCommentaire.textContent = data.commentText;
+    newArticle.appendChild(newCommentaire);
+    
+}
+
 kickoffNews(newsApi + sId).then(value => {
     console.log(value);
     newsList = value;
@@ -82,41 +91,72 @@ kickoffNews(newsApi + sId).then(value => {
 
 const commentUrl = "http://localhost:8080/api/auth/comments";
 
-const commentCaller = function (url) {
-    const commentText = document.querySelector("#commentText");
-    const commentJson = {
-        commentText: commentText.value,
-        submissionId: sId
-    };
+async function postComment(url){
+    const commentText = document.querySelector("#commentText").value;
     const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
-    return new Promise(function (resolve, reject) {
-        let req = new XMLHttpRequest()
-        req.open('POST', url, true)
-        req.onreadystatechange = function () {
-            if (req.readyState == 4) {
-                if (req.status == 200) {
-                    resolve(JSON.parse(req.response))
-                } else {
-                    reject(req)
-                }
-            }
-        };
-        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        req.setRequestHeader('Authorization', 'Bearer ' + bearerToken);
-        req.send(JSON.stringify(commentJson));
-    })
+    const response = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + bearerToken
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({
+            commentText: commentText,
+            submissionId: sId
+        })
+    });
+    console.log(response.json());
+    return response.json();
 }
 
-/*window.onload = () => {
+async function getComments(url) {
+    const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
+    const response = await fetch(url, {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            'Authorization': 'Bearer ' + bearerToken
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: null
+    });
+    console.log(response.json());
+    return response.json();
+}
+
+
+window.onload = () => {
     console.log("onLoad function called");
-    const submitButton = document.querySelector("#submitComment");
-    submitButton.addEventListener("click", () => submitCaller(commentUrl).then(
-            window.location = './feed'
+    const commentButton = document.querySelector("#commentButton");
+    commentButton.addEventListener("click", () => postComment(commentUrl).then(
+            window.location.reload()
         ).catch(
             error => {
+                commentButton.classList.add("bg-warning")
+                alert(error);
                 console.log(error);
             }
         )
     );
+    getComments(commentUrl).then(response => {
+        response.forEach(element => {
+            const commentsColumn = document.querySelector("#comments");
+            commentsColumn.appendChild(afficherCommentaires(data));
+        });
+    }).catch(
+        error => {
+            const commentsColumn = document.querySelector("comments");
+            commentsColumn.classList.add("bg-warning");
+            console.log(error);
+
+        }
+    );
 }
-*/
