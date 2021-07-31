@@ -122,7 +122,7 @@ exports.getAllComments = (req, res, next) => {
   console.log(req.params);
   Comment.findAll({
     where: {submissionId: req.params.id},
-    //order: [sequelize.fn(sequelize.col('lastActivity'), 'DESC')],
+    order: [['createdAt', 'DESC']]
   }).then(
     (comments) => {
       res.status(200).json(comments);
