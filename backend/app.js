@@ -42,8 +42,5 @@ app.use('/feed', function(req, res) {res.sendFile(path.join(__dirname + '/fronte
 app.use('/newSubmission', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/newSubmission.html'))})
 app.use('/submission', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/submission.html'))})
 const db = require("./models/index");
-db.sequelize.sync({
-	alter: true
-});
 
 module.exports = app;
