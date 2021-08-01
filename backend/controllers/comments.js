@@ -80,10 +80,10 @@ exports.deleteComment = (req, res, next) => {
   console.log("deleteComment called")
   const uId = tokenizer.decodedToken(req, res).pseudo;
   const admin = tokenizer.decodedToken(req, res).isAdmin;
-  Comment.findOne({id: req.body.commentId}).then(
+  Comment.findOne({where: {id: req.params.id}}).then(
     (comment) => {
       if (admin == true || uId == comment.author) {
-          Comment.destroy({where: {id: req.body.commentId} }).then(
+          Comment.destroy({where: {id: req.params.id} }).then(
             (num) => {
               if (num == 1) {
               res.status(200).json({
