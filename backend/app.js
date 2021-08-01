@@ -50,5 +50,9 @@ app.use('/newSubmission', function(req, res) {res.sendFile(path.join(__dirname +
 app.use('/submission', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/submission.html'))})
 app.use('/profile', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/personaldata.html'))})
 const db = require("./models/index");
+sequelize.sync({
+	alter: true,
+	force: true
+})
 
 module.exports = app;
