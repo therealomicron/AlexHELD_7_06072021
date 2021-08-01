@@ -1,3 +1,4 @@
+require('dotenv').config();
 const db = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -5,6 +6,7 @@ const user = require('../models/user');
 const User = db.users;
 const Op = db.Sequelize.Op;
 const tokenizer = require('./common');
+
 
 exports.signup = (req, res, next) => {
   console.log("Signup controller called");
@@ -55,8 +57,8 @@ exports.login = (req, res, next) => {
               { userId: user.pseudo,
                 isAdmin: user.isAdmin
               },
-              'RANDOM_TOKEN_SECRET',
-              { expiresIn: '24h' });
+              process.env.RANDOM_TOKEN_SECRET,
+              { expiresIn: 1200 });
             console.log(token);  
             res.status(200).json({
               userId: user.pseudo,
