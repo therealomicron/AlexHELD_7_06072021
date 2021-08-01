@@ -48,6 +48,7 @@ app.use('/home', function(req, res) {res.sendFile(path.join(__dirname + '/fronte
 app.use('/feed', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/feed.html'))})
 app.use('/newSubmission', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/newSubmission.html'))})
 app.use('/submission', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/submission.html'))})
+app.use('/profile', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/personaldata.html'))})
 const db = require("./models/index");
 
 module.exports = app;
