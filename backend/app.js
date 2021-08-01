@@ -5,7 +5,6 @@ const corsOptions = {
 };
 const morgan = require('morgan');
 const express = require('express');
-const bodyParser = require('body-parser');
 const app = express();
 const path = require('path'); //module for working with file and directory paths
 const helmet = require('helmet');
@@ -31,7 +30,6 @@ const sequelize = new Sequelize('p_sept', process.env.DB_USER, process.env.DB_PA
 });
 
 app.use(morgan('combined'));
-app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
