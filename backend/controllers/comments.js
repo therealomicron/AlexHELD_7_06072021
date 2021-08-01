@@ -122,7 +122,7 @@ exports.getAllComments = (req, res, next) => {
   console.log(req.params);
   Comment.findAll({
     where: {submissionId: req.params.id},
-    order: [['createdAt', 'DESC']]
+    order: [['createdAt', 'ASC']]
   }).then(
     (comments) => {
       res.status(200).json(comments);
