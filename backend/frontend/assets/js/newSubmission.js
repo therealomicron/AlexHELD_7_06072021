@@ -1,5 +1,6 @@
 const submissionUrl = "http://localhost:8080/api/auth/submissions";
 
+const logoutLink = require('common');
 async function submitCaller(url) {
     const submissionTitle = document.querySelector("#submissionTitle");
     const submissionText = document.querySelector("#submissionText");
@@ -47,4 +48,5 @@ window.onload = () => {
             }
         )
     );
+    logoutLink();
 }

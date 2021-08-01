@@ -1,6 +1,7 @@
 const signupUrl = "http://localhost:8080/api/auth/users/signup";
 const loginUrl = "http://localhost:8080/api/auth/users/login";
 
+const logoutLink = require('common');
 const connecter = function (url) {
     const uid = document.querySelector("#pseudo");
     const mdp = document.querySelector("#hashedPassword");
@@ -83,4 +84,5 @@ window.onload = () => {
             }
         )
     );
+    logoutLink();
 }

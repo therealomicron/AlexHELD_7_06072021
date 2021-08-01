@@ -1,6 +1,7 @@
 const newsApi = "http://localhost:8080/api/auth/submissions/";
 let searchParams = new URLSearchParams(location.search);
 let sId = searchParams.get("sid");
+const logoutLink = require('common');
 function getNews(url) {
     const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
     return new Promise(function (resolve, reject) {
@@ -232,4 +233,5 @@ window.onload = () => {
 
         }
     );
+    logoutLink();
 }
