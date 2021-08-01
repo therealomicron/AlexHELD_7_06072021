@@ -74,10 +74,17 @@ function afficherCommentaires(data) {
     const newArticle = document.createElement("article");
     const newCommentaire = document.createElement("p");
     const authorPseudo = document.createElement("p");
-    newArticle.appendChild(authorPseudo);
+    const topRow = document.createElement("div");
+    const topRowClasses = ["d-flex", "flex-row", "justify-content-between"];
+    newArticle.appendChild(topRow);
     newArticle.appendChild(newCommentaire);
+    topRow.appendChild(authorPseudo);
+    topRow.appendChild(createCommentLinks(data));
     authorPseudo.textContent = data.author;
     newCommentaire.textContent = data.commentText;
+    topRowClasses.forEach(element => {
+        topRow.classList.add(element);
+    })
     authorPseudo.classList.add("font-weight-bold");
     authorPseudo.classList.add("m-1");
     newCommentaire.classList.add("mx-1")
@@ -88,8 +95,39 @@ function afficherCommentaires(data) {
 }
 
 function createCommentLinks(data) {
-    const ulContainer = document.createElement("ul");
-    const liModify = document.createElement("li");
+    const btnClasses = ["btn", "btn-secondary", "dropdown-toggle", "m-1"];
+    const btnAttributes = [['type', 'button'], ["id","dropdownMenu1"], ["data-toggle","dropdown"]]
+    const commentDrop = document.createElement('div');
+    const btnDrop = document.createElement('button');
+    const menuDrop = document.createElement('div');
+    const delDrop = document.createElement('button');
+    commentDrop.classList.add("dropdown");
+    btnClasses.forEach(element => {
+        btnDrop.classList.add(element);
+    });
+    btnAttributes.forEach(element => {
+        btnDrop.setAttribute(element[0], element[1]);
+    })
+    menuDrop.classList.add("dropdown-menu");
+    delDrop.classList.add("dropdown-item");
+    delDrop.innerText = "Supprimer commentaire";
+    delDrop.setAttribute("id", "commentId" + data.id);
+    commentDrop.appendChild(btnDrop);
+    commentDrop.appendChild(menuDrop);
+    menuDrop.appendChild(delDrop);
+    delDrop.addEventListener("click", () => {
+        deleteComment(commentUrl, data.id).then(
+            response => {
+                console.log(response);
+                if (response.status == 200) {
+                    alert("Commentaire supprimé !")
+                } else {
+                    alert("Vous n'avez pas le rôle nécessaire pour supprimer ce commentaire.")
+                }
+            }
+        )
+    })
+    return commentDrop;
 }
 
 kickoffNews(newsApi + sId).then(value => {
@@ -144,6 +182,25 @@ async function getComments(url) {
     return respo;
 }
 
+async function deleteComment(url, cId){
+    const deletePath = url + cId;
+    console.log(deletePath);
+    const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
+    const response = await fetch(deletePath, {
+        method: "DELETE",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: 'same-origin',
+        headers: {
+            'Authorization': 'Bearer ' + bearerToken
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: null
+    });
+    return response;
+}
+
 
 window.onload = () => {
     const commentButton = document.querySelector("#cB");
@@ -161,11 +218,11 @@ window.onload = () => {
         )
     );
     getComments(commentUrl + sId).then(response => {
-        console.log("array length: " + response.length);
         for (let i = 0; i < response.length; i++) {
             const commentsColumn = document.querySelector("#comments");
             const comment = afficherCommentaires(response[i]);
             commentsColumn.appendChild(comment);
+
         }
     }).catch(
         error => {
