@@ -15,6 +15,13 @@ const limiter = rateLimit({
 	max: 100
   });
 app.use(helmet()); //sets HTTP headers
+app.use(helmet.contentSecurityPolicy({
+	useDefaults: true,
+	directives: {
+		"script-src": ["'self'", "*.fontawesome.com", "https://ka-f.fontawesome.com", "*.cloudflare.com", "*.bootstrapcdn.com", "code.jquery.com", "eval", "'unsafe-eval'"],
+		"default-src": ["'self'", "https://ka-f.fontawesome.com"]
+	}
+}))
 app.use(limiter);
 
 const Sequelize = require('sequelize');
