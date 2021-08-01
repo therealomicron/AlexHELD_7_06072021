@@ -1,4 +1,3 @@
-const logoutLink = require('common');
 const newsApi = "http://localhost:8080/api/auth/submissions";
 function getNews(url) {
     const bearerToken = window.sessionStorage.getItem("groupomaniaToken");
@@ -85,5 +84,9 @@ kickoffNews(newsApi).then(value => {
         console.log(error);
     }
 );
-
-logoutLink();
+logOutLink = document.querySelector("#logout");
+logOutLink.addEventListener("click", ()=> {
+    window.sessionStorage.removeItem("groupomaniaToken");
+    window.location = "./home";
+}
+)
