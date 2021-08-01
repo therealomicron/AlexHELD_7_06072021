@@ -15,6 +15,13 @@ const limiter = rateLimit({
 	max: 100
   });
 app.use(helmet()); //sets HTTP headers
+app.use(helmet.contentSecurityPolicy({
+	useDefaults: true,
+	directives: {
+		"script-src": ["'self'", "*.fontawesome.com", "https://ka-f.fontawesome.com", "*.cloudflare.com", "*.bootstrapcdn.com", "code.jquery.com", "eval", "'unsafe-eval'"],
+		"default-src": ["'self'", "https://ka-f.fontawesome.com"]
+	}
+}))
 app.use(limiter);
 
 const Sequelize = require('sequelize');
@@ -40,9 +47,7 @@ app.use('/api/auth/likes', likesRouter);
 app.use('/home', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/index.html'))})
 app.use('/feed', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/feed.html'))})
 app.use('/newSubmission', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/newSubmission.html'))})
+app.use('/submission', function(req, res) {res.sendFile(path.join(__dirname + '/frontend/submission.html'))})
 const db = require("./models/index");
-db.sequelize.sync({
-	alter: true
-});
 
 module.exports = app;

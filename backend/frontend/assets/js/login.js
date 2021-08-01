@@ -29,8 +29,6 @@ const connecter = function (url) {
 const sinscrire = function (url) {
     const uid = document.querySelector("#pseudo");
     const mdp = document.querySelector("#hashedPassword");
-    console.log(ud.value);
-    console.log(mdp.value);
     return new Promise(function (resolve, reject) {
         let req = new XMLHttpRequest()
         req.open('POST', url, true)

@@ -33,7 +33,7 @@ window.onload = () => {
     console.log("onLoad function called");
     const submitButton = document.querySelector("#submitSubmission");
     submitButton.addEventListener("click", () => submitCaller(submissionUrl).then(
-        window.location = './feed'
+            window.location = './feed'
         ).catch(
             error => {
                 console.log(error);

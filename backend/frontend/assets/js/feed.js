@@ -50,7 +50,7 @@ function makeDiv(obj) {
     newDescription.textContent = obj.submissionText;
     newDescription.classList.add("text-truncate");
     const newLink = document.createElement("a");
-    newLink.setAttribute("href", "./submission.html?pid=" + obj.id);
+    newLink.setAttribute("href", "./submission.html?sid=" + obj.id);
     newLink.textContent = "Lire la discussion";
     newDiv.appendChild(newTitle);
     newDiv.appendChild(newAuthor);
