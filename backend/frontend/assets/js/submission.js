@@ -73,12 +73,23 @@ function addToNews(obj) {
 function afficherCommentaires(data) {
     const newArticle = document.createElement("article");
     const newCommentaire = document.createElement("p");
+    const authorPseudo = document.createElement("p");
+    newArticle.appendChild(authorPseudo);
     newArticle.appendChild(newCommentaire);
+    authorPseudo.textContent = data.author;
     newCommentaire.textContent = data.commentText;
+    authorPseudo.classList.add("font-weight-bold");
+    authorPseudo.classList.add("m-1");
+    newCommentaire.classList.add("mx-1")
     newArticle.classList.add("w-100");
     newArticle.classList.add("border");
     newArticle.classList.add("my-3");
     return newArticle;
+}
+
+function createCommentLinks(data) {
+    const ulContainer = document.createElement("ul");
+    const liModify = document.createElement("li");
 }
 
 kickoffNews(newsApi + sId).then(value => {
