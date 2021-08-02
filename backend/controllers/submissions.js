@@ -67,7 +67,7 @@ exports.modifySubmission = (req, res, next) => {
     where: { id: id }
   })
   .then( () => {
-      res.status(201).json({
+      res.status(200).json({
         message: 'Submission updated successfully!'
       });
     } 

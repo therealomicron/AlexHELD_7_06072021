@@ -49,7 +49,7 @@ exports.modifyComment = (req, res, next) => {
         where: { id: commentId }
       })
       .then( () => {
-          res.status(201).json({
+          res.status(200).json({
             message: 'Comment updated successfully!'
           });
         } 
